@@ -68,10 +68,11 @@ val Asistentes: HashMap<String, Asistente> = HashMap()
 @Composable
 fun App() {
     val navController = rememberNavController()
+    val clave = ""
     NavHost(navController, startDestination = Screen.Menu.route) {
         composable(Screen.Menu.route) { ScreenMenu(navController) }
         composable(Screen.Registro.route) { ScreenRegistro(navController) }
-        composable(Screen.Modificacion.route) { ScreenModificacion(navController) }
+        composable(Screen.Modificacion.route) { ScreenModificacion(navController,clave) }
         composable(Screen.Visualizacion.route) { ScreenVisualizacion(navController) }
     }
 }
@@ -162,34 +163,6 @@ fun ScreenRegistro(navController: NavController) {
         var correo by remember { mutableStateOf(TextFieldValue("")) }
         var monto by remember { mutableStateOf(TextFieldValue("")) }
 
-
-        var expanded by remember { mutableStateOf(false) }
-        var selectedItem by remember { mutableStateOf("Opción 1") }
-        Text(text = "Seleccionado: $selectedItem")
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            DropdownMenuItem(onClick = {
-                selectedItem = "Opción 1"
-                expanded = false
-            }) {
-                Text(text = "Opción 1")
-            }
-            DropdownMenuItem(onClick = {
-                selectedItem = "Opción 2"
-                expanded = false
-            }) {
-                Text(text = "Opción 2")
-            }
-            DropdownMenuItem(onClick = {
-                selectedItem = "Opción 3"
-                expanded = false
-            }) {
-                Text(text = "Opción 3")
-            }
-        }
-
         TextField(
             modifier = Modifier.padding(3.dp),
             value = nombre,
@@ -272,7 +245,7 @@ fun ScreenRegistro(navController: NavController) {
 }
 
 @Composable
-fun ScreenModificacion(navController: NavController) {
+fun ScreenModificacion(navController: NavController, clave: String) {
     TopAppBar(
         backgroundColor = Color.DarkGray,
     ) {
@@ -472,16 +445,16 @@ fun ScreenVisualizacion(navController: NavController) {
                     ),
                     modifier = Modifier.padding(10.dp)
                 )
-                Text(
-                    text = Asist.telefono,
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.DarkGray,
-                        textAlign = TextAlign.Center
-                    ),
-                    modifier = Modifier.padding(10.dp)
-                )
+                IconButton(onClick = {
+                    Asistentes.remove(Asist.nombre)
+                    navController.navigate(Screen.Visualizacion.route)
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_baseline_delete_24),
+                        contentDescription = "Eliminar",
+                        tint = Color.DarkGray
+                    )
+                }
             }
         }
     }
